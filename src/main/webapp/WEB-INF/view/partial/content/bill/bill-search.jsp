@@ -37,7 +37,7 @@
                 </toggle-panel>
               </div>
             </div>
-            <md-progress-linear class="md-accent md-hue-1" md-mode="{{(curr.state === 'searching') ? 'query' : ''}}"></md-progress-linear>
+            <md-progress-linear class="md-accent md-hue-1" md-mode="query" ng-disabled="curr.state !== 'searching'"></md-progress-linear>
             <div layout-padding>
               <div>
                 <div class="subheader" layout="column" layout-gt-sm="row" layout-align="space-between center">
@@ -46,12 +46,9 @@
                   </div>
                   <div class="margin-right-20">
                     <label class="bold margin-right-10" for="filter-session">Session</label>
-                    <select id="filter-session" name="session" ng-model="curr.billSearch.session" ng-change="sessionChanged()">
+                    <select id="filter-session" name="session" ng-model="curr.billSearch.session"
+                            ng-options="session as session.toString() for session in activeSessionYears" ng-change="sessionChanged()">
                       <option value="">All Sessions</option>
-                      <option value="2015">2015</option>
-                      <option value="2013">2013</option>
-                      <option value="2011">2011</option>
-                      <option value="2009">2009</option>
                     </select>
                     </div>
                   <div>
@@ -231,7 +228,7 @@
                 </div>
               </div>
             </div>
-            <md-progress-linear class="md-accent md-hue-1" md-mode="{{(curr.state === 'searching') ? 'query' : ''}}"></md-progress-linear>
+            <md-progress-linear class="md-accent md-hue-1" md-mode="query" ng-disabled="curr.state !== 'searching'"></md-progress-linear>
             <div class="content-card" ng-if="curr.billUpdates.response.success === true">
               <div class="padding-10 margin-left-16">
                 <h3>{{curr.billUpdates.total}}

@@ -49,10 +49,13 @@ openApp.config(function($mdThemingProvider) {
  * Since AppCtrl is the top-most parent controller, some useful utility methods are included here to be used
  * by the children controller.
  */
-openApp.controller('AppCtrl', ['$scope', '$location', '$mdSidenav', '$mdDialog', '$http', '$interval', '$window', 'BillUtils',
-function($scope, $location, $mdSidenav, $mdDialog, $http, $interval, $window) {
+openApp.controller('AppCtrl', ['$scope', '$location', '$mdSidenav', '$mdDialog', '$http', '$interval', '$window', '$filter',
+function($scope, $location, $mdSidenav, $mdDialog, $http, $interval, $window, $filter) {
     $scope.header = {text: '', visible: false};
-    $scope.activeSession = 2015;
+    $scope.firstSession = 2009;
+    $scope.activeSession = $filter('sessionYear')();
+    // List of session years for which there is data, descending from the current session
+    $scope.activeSessionYears = getActiveSessionYears($scope.activeSession, $scope.firstSession);
     $scope.ctxPath = ctxPath;
 
     /**
@@ -160,4 +163,12 @@ function($scope, $location, $mdSidenav, $mdDialog, $http, $interval, $window) {
                 .cancel("I can wait")
         );
     };
+
+    function getActiveSessionYears (currentSession, earliestSession) {
+        var sessionYears = [];
+        for (var session = currentSession; session >= earliestSession; session -= 2) {
+            sessionYears.push(session);
+        }
+        return sessionYears;
+    }
 }]);

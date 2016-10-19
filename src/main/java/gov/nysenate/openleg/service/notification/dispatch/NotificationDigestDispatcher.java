@@ -10,8 +10,8 @@ import gov.nysenate.openleg.model.search.SearchException;
 import gov.nysenate.openleg.model.search.SearchResults;
 import gov.nysenate.openleg.service.notification.data.NotificationDigestService;
 import gov.nysenate.openleg.util.DateUtils;
-import org.elasticsearch.index.query.FilterBuilder;
-import org.elasticsearch.index.query.FilterBuilders;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,13 +56,14 @@ public class NotificationDigestDispatcher {
     @Scheduled(cron = "0 */1 * * * *")
     public void processPendingDigests() {
         Set<NotificationDigestSubscription> pendingDigests = subDao.getPendingDigests();
-        if (!pendingDigests.isEmpty()) {
-            logger.info("processing {} pending notification digests..", pendingDigests.size());
-            pendingDigests.stream()
-                    .peek(this::sendDigest)
-                    .forEach(this::postProcess);
-            logger.info("notification digests sent");
+        if (pendingDigests.isEmpty()) {
+            return;
         }
+        logger.info("processing {} pending notification digests..", pendingDigests.size());
+        pendingDigests.stream()
+                .peek(this::sendDigest)
+                .forEach(this::postProcess);
+        logger.info("notification digests sent");
     }
 
     public void sendDigest(NotificationDigestSubscription subscription) {
